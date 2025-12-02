@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  ml-flow:
+    container_name: ml-flow
+    build:
+      context: ./mlflow/serveurmlflow
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - fraud-network
+    env_file:
+      - .env
+    environment:
+      - PORT=4000
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - BACKEND_STORE_URI=${BACKEND_STORE_URI}
+      - ARTIFACT_ROOT=${ARTIFACT_ROOT}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
+  ci_pipeline:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    depends_on:
+      ml-flow:
+        condition: service_healthy  # Attend que ml-flow soit healthy
+    networks:
+      - fraud-network
+    env_file:
+      - .env
+    environment:
+      - MLFLOW_TRACKING_URI=http://ml-flow:4000
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - BACKEND_STORE_URI=${BACKEND_STORE_URI}
+      - ARTIFACT_ROOT=${ARTIFACT_ROOT}
+      - BUCKET_NAME=${BUCKET_NAME}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - PGHOST=${PGHOST}
+      - PGDATABASE=${PGDATABASE}
+      - PGUSER=${PGUSER}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGSSLMODE=${PGSSLMODE}
+      - PGCHANNELBINDING=${PGCHANNELBINDING}
+    working_dir: /home
+    volumes:
+      - ./:/home
+    command: >
+      sh -c "
+        echo '=== Pytest: load_model ===' &&
+        pytest tests/test_load_model.py &&
+        echo '=== ALL TESTS GREEN 🚀 → Running ETL ===' &&
+        python app/run_pipeline.py
+      "
+
+networks:
+  fraud-network:
+    driver: bridge

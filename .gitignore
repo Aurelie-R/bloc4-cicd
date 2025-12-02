@@ -1,0 +1,4 @@
+*.csv
+secret.sh
+.env
+*.pyc
