@@ -14,7 +14,6 @@ load_dotenv(env_path, override=True)
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://0.0.0.0:4000")
 MODEL_URI = os.getenv(
-    # "MLFLOW_MODEL_URI", "runs:/d031b71087ae48089c24301233050adb/fraud_detector"
     "MLFLOW_MODEL_URI", "models:/fraud_detector_RF@production"
     
 )
@@ -30,7 +29,7 @@ def load_mlflow_model(
     """
     logging.info(f"Chargement du modèle MLflow depuis {tracking_uri} avec le model URI {model_uri}...")
     mlflow.set_tracking_uri(tracking_uri)
-    logging.info("✅ Connexion au MLflow Tracking Server établie")
+    # logging.info("✅ Connexion au MLflow Tracking Server établie")
     model = mlflow.sklearn.load_model(model_uri)
     logging.info("✅ Model récupéré depuis MLflow")
     return model
