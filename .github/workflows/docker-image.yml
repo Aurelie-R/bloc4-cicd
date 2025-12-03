@@ -36,13 +36,13 @@ jobs:
       
     - name: Build and start containers
       run: |
-        docker-compose up --build -d
+        docker compose up --build -d
       
     - name: Wait for containers to be ready
       run: |
         sleep 30
-        docker-compose ps
+        docker compose ps
       
     - name: Check container logs
       run: |
-        docker-compose logs
+        docker compose logs
