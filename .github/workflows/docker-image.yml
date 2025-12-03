@@ -24,11 +24,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r test/requirements.txt
+          pip install -r tests/requirements.txt
       
       - name: Run conformity tests with pytest
         run: |
-          pytest test/ -v
+          pytest tests/ -v
 
 
   build:
