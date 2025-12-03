@@ -118,8 +118,7 @@ def build_db_rows(
                 datetime.now(timezone.utc)
             )
         )
-    logging.info(f"✅ Construction des {len(rows)} lignes pour la DB terminée")
-    logging.info(f"DB rows sample: {rows[:1]}")
+    # logging.info(f"✅ Construction des {len(rows)} lignes pour la DB terminée")
     return rows
 
 
