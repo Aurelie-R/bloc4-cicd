@@ -3,6 +3,7 @@ import os
 import requests
 from app.extract import get_transaction
 from dotenv import find_dotenv, load_dotenv
+import logging
 
 env_path = find_dotenv()
 load_dotenv(env_path, override=True)
@@ -27,6 +28,6 @@ def test_call_transaction_api():
     assert "data" in transaction, "❌ La transaction doit contenir la clé 'data'"
     assert len(transaction["data"]) > 0, "❌ La transaction 'data' ne doit pas être vide"
 
-    print("✅ Test de l'appel API transaction réussi : statut 200 + format JSON correct + champs attendus présents et non vides.")
+    logging.info("✅ Test de l'appel API transaction réussi : statut 200 + format JSON correct + champs attendus présents et non vides.")
 
     
