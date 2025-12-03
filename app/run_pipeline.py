@@ -51,7 +51,7 @@ def run_etl():
     Pipeline permettant une seule exécution :
     Extract → Transform + Predict → Load.
     """
-    logging.info("🚀 Démarrage du pipeline ETL")
+    logging.info("🔄 Début de boucle ETL")
     # Extract
     transaction_json, timestamp = extract_transaction()
 

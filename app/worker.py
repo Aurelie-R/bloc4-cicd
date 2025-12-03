@@ -1,9 +1,15 @@
 import time
 from run_pipeline import run_etl
+import logging
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 if __name__ == "__main__":
     while True:
         try:
+            logging.info("🚀 Démarrage du pipeline ETL")
             run_etl()  # Lance une exécution unitaire de l'ETL
         except Exception as e:
             # Gestion des erreurs
