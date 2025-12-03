@@ -10,32 +10,24 @@ services:
       - "4000:4000"
     networks:
       - fraud-network
-    env_file:
-      - .env
     environment:
       - PORT=4000
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - BACKEND_STORE_URI=${BACKEND_STORE_URI}
       - ARTIFACT_ROOT=${ARTIFACT_ROOT}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-  
-  ci_pipeline:
+    # env_file:    # en commentaire pour build sur github, en local décommenter
+    #   - .env     # en commentaire pour build sur github, en local décommenter
+
+  fraud-etl-app:
+    container_name: fraud-etl-app
     build:
-      context: .
-      dockerfile: tests/Dockerfile
+      context: ./app
+      dockerfile: Dockerfile
     depends_on:
-      ml-flow:
-        condition: service_healthy  # Attend que ml-flow soit healthy
+      - ml-flow
     networks:
       - fraud-network
-    env_file:
-      - .env
     environment:
       - MLFLOW_TRACKING_URI=http://ml-flow:4000
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
@@ -50,16 +42,8 @@ services:
       - PGPASSWORD=${PGPASSWORD}
       - PGSSLMODE=${PGSSLMODE}
       - PGCHANNELBINDING=${PGCHANNELBINDING}
-    working_dir: /home
-    volumes:
-      - ./:/home
-    command: >
-      sh -c "
-        echo '=== Pytest: load_model ===' &&
-        pytest tests/test_load_model.py &&
-        echo '=== ALL TESTS GREEN 🚀 → Running ETL ===' &&
-        python app/run_pipeline.py
-      "
+    # env_file:     # en commentaire pour build sur github, en local décommenter
+    #   - .env      # en commentaire pour build sur github, en local décommenter
 
 networks:
   fraud-network:
