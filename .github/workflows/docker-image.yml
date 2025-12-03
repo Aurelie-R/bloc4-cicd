@@ -14,18 +14,18 @@ jobs:
 
     env:
       MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
-      BACKEND_STORE_URI: ${{BACKEND_STORE_URI}}
-      ARTIFACT_ROOT: ${{ARTIFACT_ROOT}}
-      BUCKET_NAME: ${{BUCKET_NAME}}
-      AWS_DEFAULT_REGION: ${{AWS_DEFAULT_REGION}}
-      PGHOST: ${{PGHOST}}
-      PGDATABASE: ${{PGDATABASE}}
-      PGUSER: ${{PGUSER}}
-      PGPASSWORD: ${{PGPASSWORD}}
-      PGSSLMODE: ${{PGSSLMODE}}
-      PGCHANNELBINDING: ${{PGCHANNELBINDING}}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      BACKEND_STORE_URI: ${{ secrets.BACKEND_STORE_URI }}
+      ARTIFACT_ROOT: ${{ secrets.ARTIFACT_ROOT }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      PGHOST: ${{ secrets.PGHOST }}
+      PGDATABASE: ${{ secrets.PGDATABASE }}
+      PGUSER: ${{ secrets.PGUSER }}
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGSSLMODE: ${{ secrets.PGSSLMODE }}
+      PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
     
     steps:
     - name: Checkout code
