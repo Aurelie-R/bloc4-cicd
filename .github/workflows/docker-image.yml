@@ -1,0 +1,48 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+      BACKEND_STORE_URI: ${{BACKEND_STORE_URI}}
+      ARTIFACT_ROOT: ${{ARTIFACT_ROOT}}
+      BUCKET_NAME: ${{BUCKET_NAME}}
+      AWS_DEFAULT_REGION: ${{AWS_DEFAULT_REGION}}
+      PGHOST: ${{PGHOST}}
+      PGDATABASE: ${{PGDATABASE}}
+      PGUSER: ${{PGUSER}}
+      PGPASSWORD: ${{PGPASSWORD}}
+      PGSSLMODE: ${{PGSSLMODE}}
+      PGCHANNELBINDING: ${{PGCHANNELBINDING}}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build and start containers
+      run: |
+        docker-compose up --build -d
+      
+    - name: Wait for containers to be ready
+      run: |
+        sleep 30
+        docker-compose ps
+      
+    - name: Check container logs
+      run: |
+        docker-compose logs
