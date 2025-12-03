@@ -28,7 +28,10 @@ jobs:
       
       - name: Run conformity tests with pytest
         run: |
+          export PYTHONPATH="${PYTHONPATH}:${GITHUB_WORKSPACE}"
           pytest tests/ -v
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
 
   build:
