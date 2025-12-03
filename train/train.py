@@ -8,20 +8,26 @@ import numpy as np
 import time
 import mlflow
 from mlflow.models.signature import infer_signature
+from mlflow.tracking import MlflowClient
 from sklearn.model_selection import train_test_split 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import  StandardScaler, FunctionTransformer, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
- 
+from dotenv import find_dotenv, load_dotenv
+
+env_path = find_dotenv()
+load_dotenv(env_path, override=True)
+
+# Set your variables for your environment
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://0.0.0.0:4000")
+EXPERIMENT_NAME="fraud_detector"
 
 if __name__ == "__main__":
 
-    # Set your variables for your environment
-    EXPERIMENT_NAME="fraud_detector"
-
-    # Set tracking URI 
-    mlflow.set_tracking_uri("http://localhost:4000/")
+    # Set tracking URI for MLFlow
+    # mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    mlflow.set_tracking_uri("http://localhost:4000")
 
     ### MLFLOW Experiment setup
     # # Set experiment's info 
@@ -44,8 +50,8 @@ if __name__ == "__main__":
 
     # Parse arguments given in shell script
     parser = argparse.ArgumentParser()
-    parser.add_argument("--n_estimators", default=5)
-    parser.add_argument("--min_samples_split", default=2)
+    parser.add_argument("--n_estimators", default=3)
+    parser.add_argument("--min_samples_split", default=5)
     args = parser.parse_args()
 
     # Import dataset
@@ -57,9 +63,7 @@ if __name__ == "__main__":
     y = df.iloc[:, -1]
 
     # Train / test split 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
-
-    print(df.columns)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 42, stratify=y)
 
     # Preprocessing 
     def dataset_processing(df):
@@ -109,21 +113,55 @@ if __name__ == "__main__":
         ("Regressor",RandomForestClassifier(n_estimators=n_estimators, min_samples_split=min_samples_split))
     ])
 
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_train)
+    print("✅ Model trained")
+
+    # Create evaluation dataset
+    eval_data = X_test
+    eval_data["target"] = y_test
+
     # Log experiment to MLFlow
     with mlflow.start_run(experiment_id = experiment.experiment_id) as run:
-        model.fit(X_train, y_train)
-        predictions = model.predict(X_train)
-
-        train_score = model.score(X_train, y_train)
-        test_score = model.score(X_test, y_test)
-
         # Log model seperately to have more flexibility on setup 
-        mlflow.sklearn.log_model(
+        model_info = mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="fraud_detector",
             registered_model_name="fraud_detector_RF",
             signature=infer_signature(X_train, predictions)
         )
+        print(f"✅ Model logged in MLflow with run_id {run.info.run_id}")
+
+        # Evaluate model
+        result = mlflow.models.evaluate(
+            model=model_info.model_uri,
+            data=eval_data,
+            targets="target",
+            model_type="classifier",
+            evaluators=["default"],
+        )
+        print(f"Recall Score: {result.metrics['recall_score']:.3f}")
+        print(f"F1 Score: {result.metrics['f1_score']:.3f}")
+        print(f"ROC AUC: {result.metrics['roc_auc']:.3f}")
+
+        # Récupérer la dernière version du modèle
+        client = MlflowClient()
+        latest = client.get_latest_versions(
+            "fraud_detector_RF", stages=["None"]
+        )
+        if latest:
+            model_version = latest[-1].version
+            print(f"[INFO] Model logged as version {model_version}")
+
+            # Mettre à jour l’alias "candidate"
+            client.set_registered_model_alias(
+                name="fraud_detector_RF",
+                alias="candidate",
+                version=model_version,
+            )
+            print(f"[INFO] Alias 'candidate' now points to version {model_version}")
+        else:
+            print("[WARN] Aucun modèle trouvé dans le registre.")
         
     print("...Done!")
     print(f"---Total training time: {time.time()-start_time}")
