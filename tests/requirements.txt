@@ -5,4 +5,5 @@ requests>=2.31.0,<3
 pandas 
 psycopg2-binary
 pytest
+pytest-cov
 dotenv
