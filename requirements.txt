@@ -5,3 +5,6 @@ requests>=2.31.0,<3
 pandas 
 psycopg2-binary
 dotenv
+ipykernel
+seaborn
+xgboost
