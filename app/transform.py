@@ -20,9 +20,8 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_REGION = os.getenv("AWS_DEFAULT_REGION", "eu-north-1")
 S3_BUCKET = os.getenv("BUCKET_NAME")
-
-SILVER_PREFIX = "data/silver"
-GOLD_PREFIX = "data/gold"
+SILVER_PREFIX = os.getenv("SILVER_PREFIX", "data/silver")
+GOLD_PREFIX = os.getenv("GOLD_PREFIX", "data/gold")
 
 boto3.setup_default_session(
     aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -66,13 +65,18 @@ def save_features_to_s3(features_df: pd.DataFrame, timestamp: str) -> str:
     silver_name = f"{timestamp}_transaction_data_cleaned.csv"
     silver_key = f"{SILVER_PREFIX}/{silver_name}"
 
-    s3_client.put_object(
-        Bucket=S3_BUCKET,
-        Key=silver_key,
-        Body=csv_data,
-        ContentType='application/csv'
-    )
-    logging.info(f"✅ Silver transaction envoyée sur s3://{S3_BUCKET}/{silver_key}")
+    try:
+        s3_client.put_object(
+            Bucket=S3_BUCKET,
+            Key=silver_key,
+            Body=csv_data,
+            ContentType='application/csv'
+        )
+        logging.info(f"✅ Silver transaction envoyée sur s3://{S3_BUCKET}/{silver_key}")
+        return silver_key
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi sur S3 : {e}")
+        raise e
 
 
 

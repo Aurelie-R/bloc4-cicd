@@ -1,7 +1,7 @@
 # tests/test_transform.py
 
 import pandas as pd
-from app.transform import build_features_from_transaction, predict_fraud
+from app.transform import build_features_from_transaction, predict_fraud, save_features_to_s3, save_predictions_to_s3
 from app.load_model import load_mlflow_model
 import logging
 
@@ -75,3 +75,42 @@ def test_predict_fraud_output_values():
     assert 0 <= proba <= 1, f"❌ fraud_proba doit être entre 0 et 1, obtenu {proba}"
 
     print("✅ predict_fraud renvoie une classe valide + proba valide.")
+
+def test_save_features_to_s3():
+    """
+    Test simple : vérifier que la fonction retourne une clé S3 correcte.
+    """
+
+    fake_features = pd.DataFrame(
+        {
+            "feature1": [1.0, 2.0],
+            "feature2": [3.0, 4.0]
+        }
+    )
+    timestamp = "20240908_140310"
+    silver_key = save_features_to_s3(fake_features, timestamp)
+
+    expected_key = f"test/silver/{timestamp}_transaction_data_cleaned.csv"
+    assert silver_key == expected_key, f"❌ La clé S3 retournée est incorrecte : {silver_key}"
+
+    logging.info("✅ save_features_to_s3 fonctionne.")
+
+def test_save_predictions_to_s3():
+    """
+    Test simple : vérifier que la fonction retourne une clé S3 correcte.
+    """
+
+    fake_predictions = pd.DataFrame(
+        {
+            "feature1": [1.0, 2.0],
+            "fraud_pred": [0, 1],
+            "fraud_proba": [0.1, 0.9]
+        }
+    )
+    timestamp = "20240908_140310"
+    gold_key = save_predictions_to_s3(fake_predictions, timestamp)
+
+    expected_key = f"test/gold/{timestamp}_transaction_data_cleaned.csv"
+    assert gold_key == expected_key, f"❌ La clé S3 retournée est incorrecte : {gold_key}"
+
+    logging.info("✅ save_predictions_to_s3 fonctionne.")
