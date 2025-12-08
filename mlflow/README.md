@@ -59,26 +59,36 @@ Nécessaire pour que MLflow puisse écrire dans S3.
 Cette URL devient votre `BACKEND_STORE_URI`.
 
 ---
+### 1.4. Hugging Face
+Créez un compte sous hugging face : https://huggingface.co/ si vous n'en avez pas déjà un.
 
-## 2. Construire l'image Docker
 
-Depuis le répertoire contenant le `Dockerfile` :
+## 2. Construire l'app depuis Hugging Face Spaces
 
-```bash
-docker build -t mlflow-cicd .
-```
+### 2.1. Création du nouveau Space
 
----
+1. Depuis Hugging Face Spaces : https://huggingface.co/spaces, créez un **+ New Space** avec les informations suivantes : 
+    - Space name : choisissez un nom
+    - Select the Space SDK : `Docker`
+    - Choose a Docker template : `Blank`
+    - Space hardware : `CPU Basic`
+    - `Public`
+  Cliquez sur `Create Space`.
 
-## 3. Configuration des variables d’environnement
+2. Dans l'onglet `Files` de votre space nouvellement créé, importez les fichiers suivants (remplacez si déjà existants) :
+    - Dockerfile
+    - app.py
+    - requirements.txt
+
+### 2.2. Configuration des variables d'environnement
 Les variables d'environnement suivantes doivent être définies dans les **Repository secrets** du Space :
 
-### 3.1. Base de données (obligatoire)
+#### 2.2.1. Base de données (obligatoire)
 - `BACKEND_STORE_URI` : URL de connexion PostgreSQL
   - Format : `postgresql://username:password@host:port/database?sslmode=require`
   - Exemple : `postgresql://mlflow_user:mypassword@db.example.com:5432/mlflow_db?sslmode=require`
 
-### 3.2. Stockage des artifacts S3 (obligatoire)
+#### 2.2.2. Stockage des artifacts S3 (obligatoire)
 - `ARTIFACT_ROOT` : Chemin S3 pour stocker les artifacts
   - Format : `s3://nom-du-bucket/chemin/vers/artifacts`
   - Exemple : `s3://my-mlflow-bucket/mlflow-artifacts`
@@ -88,17 +98,24 @@ Les variables d'environnement suivantes doivent être définies dans les **Repos
 - `AWS_DEFAULT_REGION` : Région AWS du bucket S3
   - Exemple : `eu-west-1`, `us-east-1`, etc.
 
-### 3.3. Authentification MLflow (optionnel)
+#### 2.2.3. Authentification MLflow (optionnel)
 - `MLFLOW_TRACKING_USERNAME` : Nom d'utilisateur pour l'accès à MLflow
 - `MLFLOW_TRACKING_PASSWORD` : Mot de passe pour l'accès à MLflow
 
-## 4. Architecture
+### 2.3. Construiction de l'application
+Allez sur l'onglet `App` de votre space, il doit se contruire automatiquement.
+Une fois la construction démarrée, vous voyez le serveur mlflow en arrière plan. 
+Fermez la fenêtre des logs, et en haut de l'écran entre le menu "Settings" et l'image de votre user, cliquez sur les trois petits points verticaux, puis sur `Embed this space` pour récupérer la valeur du `src` qui sera à renseigner dans le code python lors du mlflow.set_tracking_uri (cf point 4. ci-dessous)
+
+---
+
+## 3. Architecture
 
 - **Backend store** : PostgreSQL (métadonnées des runs, paramètres, métriques)
 - **Artifact store** : AWS S3 (modèles, fichiers, plots)
 - **Interface** : MLflow UI accessible via l'URL du Space
 
-## 5. Utilisation
+## 4. Utilisation
 
 Depuis votre code Python :
 ```python
@@ -118,3 +135,7 @@ with mlflow.start_run():
     mlflow.log_metric("accuracy", 0.95)
     mlflow.log_artifact("model.pkl")
 ```
+
+Vous êtes prêt à lancer vos expériences MLflow 🎉
+
+---
