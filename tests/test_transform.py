@@ -60,7 +60,7 @@ def test_predict_fraud_output_values():
                 "merch_lat" : 46.904128,
                 "merch_long" : -90.911955,
                 "is_fraud" : 0,
-                "unixtime": 1765214590.221,
+                "unix_time": 1765214590.221,
                 "trans_date_trans_time": "2024-09-08 14:03:10"
             }
         ]
