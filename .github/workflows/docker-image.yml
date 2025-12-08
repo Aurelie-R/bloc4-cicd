@@ -76,15 +76,34 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       
-    - name: Build and start containers
+    - name: Build Docker image
       run: |
-        docker compose up --build -d
+        docker build -t my-etl:latest ./app
+
+    - name: Run container
+      run: |
+        docker run -d \
+          --name my-etl-container \
+          -e MLFLOW_TRACKING_URI="${{ secrets.MLFLOW_TRACKING_URI }}" \
+          -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+          -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+          -e BACKEND_STORE_URI="${{ secrets.BACKEND_STORE_URI }}" \
+          -e ARTIFACT_ROOT="${{ secrets.ARTIFACT_ROOT }}" \
+          -e BUCKET_NAME="${{ secrets.BUCKET_NAME }}" \
+          -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
+          -e PGHOST="${{ secrets.PGHOST }}" \
+          -e PGDATABASE="${{ secrets.PGDATABASE }}" \
+          -e PGUSER="${{ secrets.PGUSER }}" \
+          -e PGPASSWORD="${{ secrets.PGPASSWORD }}" \
+          -e PGSSLMODE="${{ secrets.PGSSLMODE }}" \
+          -e PGCHANNELBINDING="${{ secrets.PGCHANNELBINDING }}" \
+          my-etl:latest
       
     - name: Wait for containers to be ready
       run: |
         sleep 60
-        docker compose ps
+        docker ps
       
     - name: Check container logs
       run: |
-        docker compose logs
+        docker logs my-etl-container
