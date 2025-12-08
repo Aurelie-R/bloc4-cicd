@@ -17,7 +17,8 @@ logging.basicConfig(
 )
 
 # === API URL ===
-API_URL = "https://sdacelo-real-time-fraud-detection.hf.space/current-transactions"
+# API_URL = "https://sdacelo-real-time-fraud-detection.hf.space/current-transactions" # URL de l'école
+API_URL = "https://aremusan-real-time-fraud-detection.hf.space/current-transactions" # URL personnelle
 
 # === S3 ===
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")

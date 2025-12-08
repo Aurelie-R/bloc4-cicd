@@ -18,7 +18,8 @@ def test_call_transaction_api():
     - la réponse contient les champs attendus.
     """
     # --- 1) Vérification du status_code (appel direct) ---
-    test_url = "https://sdacelo-real-time-fraud-detection.hf.space/current-transactions"
+    # test_url = "https://sdacelo-real-time-fraud-detection.hf.space/current-transactions"
+    test_url = "https://aremusan-real-time-fraud-detection.hf.space/current-transactions"
     r = requests.get(test_url, timeout=60)
     assert r.status_code == 200, f"❌ Échec de l'appel API, status code: {r.status_code}, attendu 200"
 
