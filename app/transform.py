@@ -105,11 +105,16 @@ def save_predictions_to_s3(pred_df: pd.DataFrame, timestamp: str) -> str:
     gold_name = f"{timestamp}_transaction_data_cleaned.csv"
     gold_key = f"{GOLD_PREFIX}/{gold_name}"
 
-    s3_client.put_object(
-        Bucket=S3_BUCKET,
-        Key=gold_key,
-        Body=csv_data,
-        ContentType='application/csv'
-    )
-    logging.info(f"✅ Gold transaction envoyée sur s3://{S3_BUCKET}/{gold_key}")
+    try : 
+        s3_client.put_object(
+            Bucket=S3_BUCKET,
+            Key=gold_key,
+            Body=csv_data,
+            ContentType='application/csv'
+        )
+        logging.info(f"✅ Gold transaction envoyée sur s3://{S3_BUCKET}/{gold_key}")
+        return gold_key
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi sur S3 : {e}")
+        raise e
 
