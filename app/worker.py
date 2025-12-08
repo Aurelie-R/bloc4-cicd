@@ -7,7 +7,8 @@ logging.basicConfig(
 )
 
 if __name__ == "__main__":
-    while True:
+    # while True:
+    for i in range(30) : # Limiter à 30 itérations pour les tests
         try:
             logging.info("🚀 Démarrage du pipeline ETL")
             run_etl()  # Lance une exécution unitaire de l'ETL
