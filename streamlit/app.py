@@ -13,7 +13,7 @@ def get_data() -> pd.DataFrame:
         type="sql",
         url=os.environ['BACKEND_STORE_URI']
     )
-    df = conn.query("SELECT * FROM transactions WHERE trans_date_trans_time >= TO_CHAR(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD') || ' 00:00:00' AND trans_date_trans_time < TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') || ' 00:00:00'")
+    df = conn.query("SELECT * FROM fraud_transaction_predictions WHERE trans_date_trans_time >= (CURRENT_DATE - INTERVAL '1 day') AND trans_date_trans_time < CURRENT_DATE;")
     return df
 JOUR_HIER = (pd.Timestamp.now() - pd.Timedelta(days=1)).strftime('%Y-%m-%d')
 st.title(f"Tableau des transactions bancaires du {JOUR_HIER}")
@@ -26,8 +26,8 @@ try:
         st.metric(label="Nombre de transactions", value=len(df))
         st.metric(label="Montant total des transactions", value=f"${df['amt'].sum():,.2f}")
     with col2:
-        st.metric(label="Nombre de transactions frauduleuses", value=len(df[df['prediction'] == 1]))
-        st.metric(label="Montant total des transactions frauduleuses", value=f"${df[df['prediction'] == 1]['amt'].sum():,.2f}")
+        st.metric(label="Nombre de transactions frauduleuses", value=len(df[df['fraud_pred'] == 1]))
+        st.metric(label="Montant total des transactions frauduleuses", value=f"${df[df['fraud_pred'] == 1]['amt'].sum():,.2f}")
 
 except URLError as e:
     st.error(f"This demo requires internet access. Connection error: {e.reason}")
