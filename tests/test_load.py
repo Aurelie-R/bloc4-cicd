@@ -67,7 +67,7 @@ def test_build_db_rows_basic():
     pred_df = pd.DataFrame(
         [
             {
-                "cc_num": 12345,
+                "cc_num": "12345",
                 "merchant" : "fraud_Test-merchant",
                 "category" : "home",
                 "amt" : 89.5,
