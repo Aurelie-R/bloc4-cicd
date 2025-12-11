@@ -11,6 +11,7 @@ from mlflow.models.signature import infer_signature
 from mlflow.tracking import MlflowClient
 from sklearn.model_selection import train_test_split 
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 from sklearn.preprocessing import  StandardScaler, FunctionTransformer, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -26,8 +27,8 @@ EXPERIMENT_NAME="fraud_detector"
 if __name__ == "__main__":
 
     # Set tracking URI for MLFlow
-    # mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    mlflow.set_tracking_uri("http://localhost:4000")
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    # mlflow.set_tracking_uri("http://localhost:4000")
 
     ### MLFLOW Experiment setup
     # # Set experiment's info 
@@ -110,7 +111,8 @@ if __name__ == "__main__":
     model = Pipeline(steps=[
         ("Dates_preprocessing", date_preprocessor),
         ('features_preprocessing', feature_preprocessor),
-        ("Regressor",RandomForestClassifier(n_estimators=n_estimators, min_samples_split=min_samples_split))
+        # ("Regressor",RandomForestClassifier(n_estimators=n_estimators, min_samples_split=min_samples_split))
+        ("Regressor",XGBClassifier(scale_pos_weight=len(y[y==0])/len(y[y==1])))
     ])
 
     model.fit(X_train, y_train)
@@ -132,17 +134,17 @@ if __name__ == "__main__":
         )
         print(f"✅ Model logged in MLflow with run_id {run.info.run_id}")
 
-        # Evaluate model
-        result = mlflow.models.evaluate(
-            model=model_info.model_uri,
-            data=eval_data,
-            targets="target",
-            model_type="classifier",
-            evaluators=["default"],
-        )
-        print(f"Recall Score: {result.metrics['recall_score']:.3f}")
-        print(f"F1 Score: {result.metrics['f1_score']:.3f}")
-        print(f"ROC AUC: {result.metrics['roc_auc']:.3f}")
+        # # Evaluate model
+        # result = mlflow.models.evaluate(
+        #     model=model_info.model_uri,
+        #     data=eval_data,
+        #     targets="target",
+        #     model_type="classifier",
+        #     evaluators=["default"],
+        # )
+        # print(f"Recall Score: {result.metrics['recall_score']:.3f}")
+        # print(f"F1 Score: {result.metrics['f1_score']:.3f}")
+        # print(f"ROC AUC: {result.metrics['roc_auc']:.3f}")
 
         # Récupérer la dernière version du modèle
         client = MlflowClient()
