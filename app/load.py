@@ -16,18 +16,7 @@ logging.basicConfig(
 env_path = find_dotenv()
 load_dotenv(env_path, override=True)
 
-# Connexion via env NEON / Postgres
-PG_HOST = os.getenv("PGHOST")
-PG_PORT = int(os.getenv("PGPORT", "5432"))
-PG_DB = os.getenv("PGDATABASE")
-PG_USER = os.getenv("PGUSER")
-PG_PASSWORD = os.getenv("PGPASSWORD")
-
-# Option : URI complète si tu préfères
-DATABASE_URL = os.getenv(
-    "BACKEND_STORE_URI",
-    f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}?sslmode=require&channel_binding=require",
-)
+DATABASE_URL = os.getenv("BACKEND_STORE_URI")
 
 
 def pg_connect():
@@ -137,4 +126,4 @@ def insert_predictions(rows):
         if rows:
             execute_values(cur, insert_sql, rows)
         conn.commit()
-    logging.info(f"✅ Transaction écrite dans la database {PG_DB} ici: {PG_HOST}")
+    logging.info(f"✅ Transaction écrite dans la database avec succès.")
