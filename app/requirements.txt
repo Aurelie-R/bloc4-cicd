@@ -1,6 +1,7 @@
 boto3
 mlflow==2.21.3
 scikit-learn==1.4.2
+xgboost
 requests>=2.31.0,<3
 pandas 
 psycopg2-binary
