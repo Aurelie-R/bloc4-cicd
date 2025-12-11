@@ -26,8 +26,8 @@ jobs:
       # PGPASSWORD: ${{ secrets.PGPASSWORD_test }}
       # PGSSLMODE: ${{ secrets.PGSSLMODE }}
       # PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
-      SILVER_PREFIX: ${{ secrets.SILVER_PREFIX_test }} "test/silver"
-      GOLD_PREFIX: ${{ secrets.GOLD_PREFIX_test }} "test/gold"
+      SILVER_PREFIX: ${{ secrets.SILVER_PREFIX_test }}
+      GOLD_PREFIX: ${{ secrets.GOLD_PREFIX_test }}
     
     steps:
       - name: Checkout code
@@ -70,8 +70,8 @@ jobs:
       # PGPASSWORD: ${{ secrets.PGPASSWORD }}
       # PGSSLMODE: ${{ secrets.PGSSLMODE }}
       # PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
-      SILVER_PREFIX: "data/silver"
-      GOLD_PREFIX: "data/gold"
+      SILVER_PREFIX: ${{ secrets.SILVER_PREFIX }}
+      GOLD_PREFIX: ${{ secrets.GOLD_PREFIX }}
     
     steps:
     - name: Checkout code
