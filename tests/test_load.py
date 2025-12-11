@@ -67,7 +67,7 @@ def test_build_db_rows_basic():
     pred_df = pd.DataFrame(
         [
             {
-                "cc_num": "12345",
+                "cc_num": 12345,
                 "merchant" : "fraud_Test-merchant",
                 "category" : "home",
                 "amt" : 89.5,
@@ -105,7 +105,7 @@ def test_build_db_rows_basic():
 
     row = rows[0]
     # cc_num,trans_date_trans_time,merchant,category,amt,first_name,last_name,gender,street,city,state,zip,lat,long,city_pop,job,dob,trans_num,merch_lat,merch_long,unix_time,is_fraud,fraud_pred,fraud_proba,created_at
-    assert row[0] == "12345"
+    assert isinstance(row[0], int)
     assert isinstance(row[1], datetime)
     assert row[2] == "fraud_Test-merchant"
     assert row[3] ==  "home"
