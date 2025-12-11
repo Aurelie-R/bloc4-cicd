@@ -110,7 +110,7 @@ def test_save_predictions_to_s3():
     timestamp = "20240908_140310"
     gold_key = save_predictions_to_s3(fake_predictions, timestamp)
 
-    expected_key = f"test/gold/{timestamp}_transaction_data_cleaned.csv"
+    expected_key = f"test/gold/{timestamp}_transaction_data_predicted.csv"
     assert gold_key == expected_key, f"❌ La clé S3 retournée est incorrecte : {gold_key}"
 
     logging.info("✅ save_predictions_to_s3 fonctionne.")

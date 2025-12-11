@@ -102,7 +102,7 @@ def save_predictions_to_s3(pred_df: pd.DataFrame, timestamp: str) -> str:
     csv_data = pred_df.to_csv(index=False)
     
     # Create a unique filename with timestamp
-    gold_name = f"{timestamp}_transaction_data_cleaned.csv"
+    gold_name = f"{timestamp}_transaction_data_predicted.csv"
     gold_key = f"{GOLD_PREFIX}/{gold_name}"
 
     try : 
