@@ -13,21 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      BACKEND_STORE_URI: ${{ secrets.BACKEND_STORE_URI }}
-      ARTIFACT_ROOT: ${{ secrets.ARTIFACT_ROOT }}
-      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      PGHOST: ${{ secrets.PGHOST }}
-      PGDATABASE: ${{ secrets.PGDATABASE }}
-      PGUSER: ${{ secrets.PGUSER }}
-      PGPASSWORD: ${{ secrets.PGPASSWORD }}
-      PGSSLMODE: ${{ secrets.PGSSLMODE }}
-      PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
-      SILVER_PREFIX: "test/silver"
-      GOLD_PREFIX: "test/gold"
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI_test }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_test }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_test }}
+      BACKEND_STORE_URI: ${{ secrets.BACKEND_STORE_URI_test }}
+      ARTIFACT_ROOT: ${{ secrets.ARTIFACT_ROOT_test }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME_test }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION_test }}
+      # PGHOST: ${{ secrets.PGHOST_test }}
+      # PGDATABASE: ${{ secrets.PGDATABASE_test }}
+      # PGUSER: ${{ secrets.PGUSER_test }}
+      # PGPASSWORD: ${{ secrets.PGPASSWORD_test }}
+      # PGSSLMODE: ${{ secrets.PGSSLMODE }}
+      # PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
+      SILVER_PREFIX: ${{ secrets.SILVER_PREFIX_test }} "test/silver"
+      GOLD_PREFIX: ${{ secrets.GOLD_PREFIX_test }} "test/gold"
     
     steps:
       - name: Checkout code
@@ -64,12 +64,12 @@ jobs:
       ARTIFACT_ROOT: ${{ secrets.ARTIFACT_ROOT }}
       BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      PGHOST: ${{ secrets.PGHOST }}
-      PGDATABASE: ${{ secrets.PGDATABASE }}
-      PGUSER: ${{ secrets.PGUSER }}
-      PGPASSWORD: ${{ secrets.PGPASSWORD }}
-      PGSSLMODE: ${{ secrets.PGSSLMODE }}
-      PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
+      # PGHOST: ${{ secrets.PGHOST }}
+      # PGDATABASE: ${{ secrets.PGDATABASE }}
+      # PGUSER: ${{ secrets.PGUSER }}
+      # PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      # PGSSLMODE: ${{ secrets.PGSSLMODE }}
+      # PGCHANNELBINDING: ${{ secrets.PGCHANNELBINDING }}
       SILVER_PREFIX: "data/silver"
       GOLD_PREFIX: "data/gold"
     
