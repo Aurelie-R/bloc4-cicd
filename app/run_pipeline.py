@@ -4,7 +4,7 @@ import boto3
 
 from extract import extract_transaction
 from load_model import load_mlflow_model
-from transform import build_features_from_transaction, save_features_to_s3, predict_fraud, save_predictions_to_s3
+from transform import build_features_from_transaction, save_features_to_s3, predict_fraud, save_predictions_to_s3, alert_fraud_detection
 from load import ensure_predictions_table_exists, build_db_rows, insert_predictions
 
 
@@ -63,6 +63,7 @@ def run_etl():
     save_features_to_s3(features_df, timestamp)
 
     pred_df = predict_fraud(model, features_df)
+    alert_fraud_detection(pred_df)
     save_predictions_to_s3(pred_df, timestamp)
 
     # Load → DB

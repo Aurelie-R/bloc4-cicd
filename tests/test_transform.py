@@ -1,7 +1,7 @@
 # tests/test_transform.py
 
 import pandas as pd
-from app.transform import build_features_from_transaction, predict_fraud, save_features_to_s3, save_predictions_to_s3
+from app.transform import build_features_from_transaction, predict_fraud, save_features_to_s3, save_predictions_to_s3, alert_fraud_detection
 from app.load_model import load_mlflow_model
 import logging
 
@@ -75,6 +75,28 @@ def test_predict_fraud_output_values():
     assert 0 <= proba <= 1, f"❌ fraud_proba doit être entre 0 et 1, obtenu {proba}"
 
     print("✅ predict_fraud renvoie une classe valide + proba valide.")
+
+def test_alert_fraud_detection(caplog):
+    """
+    Test simple : vérifier que l'alerte est loggée si une fraude est détectée.
+    """
+    from app.transform import alert_fraud_detection
+
+    fake_predictions = pd.DataFrame(
+        {
+            "feature1": [1.0, 2.0],
+            "fraud_pred": [0, 1],
+            "fraud_proba": [0.1, 0.9]
+        }
+    )
+
+    with caplog.at_level(logging.WARNING):
+        alerted = alert_fraud_detection(fake_predictions)
+
+    assert alerted is True, "❌ L'alerte n'a pas été déclenchée alors qu'une fraude est présente."
+    assert any("Une transaction frauduleuse a été détectée" in message for message in caplog.messages), "❌ Le message d'alerte n'a pas été loggé."
+
+    logging.info("✅ alert_fraud_detection fonctionne.")
 
 def test_save_features_to_s3():
     """

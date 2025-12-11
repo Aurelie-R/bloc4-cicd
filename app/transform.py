@@ -93,6 +93,14 @@ def predict_fraud(model, features: pd.DataFrame) -> pd.DataFrame:
 
     return result
 
+def alert_fraud_detection(pred_df: pd.DataFrame):
+    """
+    Vérifie les prédictions et log une alerte si une fraude est détectée.
+    """
+    if pred_df['fraud_pred'].any() == 1:
+        logging.warning("⚠️ Une transaction frauduleuse a été détectée !")
+        return True
+    return False
 
 def save_predictions_to_s3(pred_df: pd.DataFrame, timestamp: str) -> str:
     """
