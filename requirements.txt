@@ -8,3 +8,4 @@ dotenv
 ipykernel
 seaborn
 xgboost
+uvicorn[standard]
