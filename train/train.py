@@ -115,16 +115,15 @@ if __name__ == "__main__":
         ("Regressor",XGBClassifier(scale_pos_weight=len(y[y==0])/len(y[y==1])))
     ])
 
-    model.fit(X_train, y_train)
-    predictions = model.predict(X_train)
-    print("✅ Model trained")
-
     # Create evaluation dataset
     eval_data = X_test
     eval_data["target"] = y_test
 
     # Log experiment to MLFlow
     with mlflow.start_run(experiment_id = experiment.experiment_id) as run:
+        model.fit(X_train, y_train)
+        predictions = model.predict(X_train)
+        print("✅ Model trained")
         # Log model seperately to have more flexibility on setup 
         model_info = mlflow.sklearn.log_model(
             sk_model=model,
@@ -134,17 +133,17 @@ if __name__ == "__main__":
         )
         print(f"✅ Model logged in MLflow with run_id {run.info.run_id}")
 
-        # # Evaluate model
-        # result = mlflow.models.evaluate(
-        #     model=model_info.model_uri,
-        #     data=eval_data,
-        #     targets="target",
-        #     model_type="classifier",
-        #     evaluators=["default"],
-        # )
-        # print(f"Recall Score: {result.metrics['recall_score']:.3f}")
-        # print(f"F1 Score: {result.metrics['f1_score']:.3f}")
-        # print(f"ROC AUC: {result.metrics['roc_auc']:.3f}")
+        # Evaluate model
+        result = mlflow.models.evaluate(
+            model=model_info.model_uri,
+            data=eval_data,
+            targets="target",
+            model_type="classifier",
+            evaluators=["default"],
+        )
+        print(f"Recall Score: {result.metrics['recall_score']:.3f}")
+        print(f"F1 Score: {result.metrics['f1_score']:.3f}")
+        print(f"ROC AUC: {result.metrics['roc_auc']:.3f}")
 
         # Récupérer la dernière version du modèle
         client = MlflowClient()
