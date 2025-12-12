@@ -1,6 +1,6 @@
 ---
 title: Mlflow
-emoji: 👁
+emoji: 📊
 colorFrom: green
 colorTo: blue
 sdk: docker
@@ -14,7 +14,7 @@ Ce dépôt permet de lancer un serveur **MLflow** dans un conteneur Docker, avec
 
 - **Neon PostgreSQL** comme _backend store_ (métadonnées MLflow)
 - **Amazon S3** comme _artifact store_ (modèles, métriques, fichiers)
-- Une interface accessible sur : **http://localhost:4000**
+- Une interface accessible sur : **https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space**
 
 ---
 
@@ -28,7 +28,6 @@ Ce dépôt permet de lancer un serveur **MLflow** dans un conteneur Docker, avec
 4. (Optionnel) créez un dossier dans le bucket, par exemple `mlflow-artifacts/`.
 
 **Valeur à utiliser pour MLflow :**
-
 `s3://mlflow-cicd/mlflow-artifacts/`
 
 ---
@@ -49,12 +48,9 @@ Nécessaire pour que MLflow puisse écrire dans S3.
 ### 1.3. Base de données Neon (BACKEND_STORE_URI)
 
 1. Créez un projet sur : https://neon.tech
-2. Récupérez l’URL PostgreSQL du type :
+2. Récupérez l’URL PostgreSQL du type : `postgresql://<user>:<password>@<host>/<database>?sslmode=require`
 
-`postgresql://<user>:<password>@<host>/<database>?sslmode=require`
-
-3. Exemple :
-   `postgresql://neondb_owner:MON_MDP@ep-xxxx-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
+3. Exemple : `postgresql://neondb_owner:MON_MDP@ep-xxxx-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
 
 Cette URL devient votre `BACKEND_STORE_URI`.
 
