@@ -173,7 +173,7 @@ DATABASE_URL=postgresql://user:password@host/database
 
 ## 🚀 Utilisation
 ### 1. Création et déploiement du serveur mlflow sur Hugging Face Spaces
-Le détail de l'installation est documenté dans le ![fichier README](mlflow/README.md) du répertoire mlflow.
+Le détail de l'installation est documenté dans le [fichier README](mlflow/README.md) du répertoire mlflow.
 
 Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugging face space sont les même que celles définies dans votre fichier .venv
 
@@ -192,17 +192,23 @@ python app/worker.py
 
 ```
 ### 4. Création et déploiement de l'application streamlit pour visualisation des données (sur Huggigng Face Spaces)
-Le détail de l'installation est documenté dans le ![fichier README](streamlit/README.md) du répertoire streamlit.
+Le détail de l'installation est documenté dans le [fichier README](streamlit/README.md) du répertoire streamlit.
 
 Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugging face space sont les même que celles définies dans votre fichier .venv
 
-Une fois le container déployé, vérifier que l'on accède bien au reporting streamlit sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space 
-
-
 
 ### 5. Visualisation des données
-Une fois le container streamlit déployé, l'application de visualisation des données est disponible sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space  défini au point 4.
+Une fois le container streamlit déployé, l'application de visualisation des données est disponible sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space  défini lors de l'installation du point 4.
 Par défaut l'application affiche les données de la veille. Pour changer la sélection de dates, choisir une nouvelle plage dans le calendrier et cliquer sur "raffraichir les données".
+
+### 6. Création et déploiement de l'application streamlit pour visualisation des données (sur Huggigng Face Spaces)
+Le détail de l'installation est documenté dans le [fichier README](API/README.md) du répertoire API.
+
+Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugging face space sont les même que celles définies dans votre fichier .venv
+
+
+### 7. Utilisation de l'API
+Une fois le container fastAPI déployé, l'API est disponible sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space  défini lors de l'installation du point 6.
 
 ---
 
