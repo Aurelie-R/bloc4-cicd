@@ -231,6 +231,23 @@ Une fois le container fastAPI déployé, l'API est disponible sur https://VOTRE_
 ### Etape 3: Load
 - En utilisant **SQLAlchemy**, enregistrement des données dans Neon DB
 
+---
+
+## 🔄 CI / CD
+
+### Etape 1: Mise à jour du code
+A chaque mise à jour du code sur github, une action de vérification est lancée.
+![Workflow CICD](data/workflow-cicd.png)
+
+### Etape 2: Tests d'intégration
+Un ensemble de tests de vérification du code sont exécutés en automatique pour s'assurer de la conformité de celui ci. Si l'ensemble des tests se termine sans échec, on passe à l'étape suivante. Sinon un rapport d'erreur est envoyé.
+![Tests 1](data/Pytest1-2.png)
+![Tests 2](data/Pytest2-2.png)
+
+### Etape 3: Déploiement automatisé
+Si tous les tests de l'étape précedente se sont déroulés sans erreur, la nouvelle application est déployée dans un container docker.
+![Déploiement](data/deploiement_application.png)
+
 
 
 
