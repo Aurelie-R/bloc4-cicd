@@ -199,7 +199,9 @@ Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugg
 
 ### 5. Visualisation des données
 Une fois le container streamlit déployé, l'application de visualisation des données est disponible sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space  défini lors de l'installation du point 4.
-Par défaut l'application affiche les données de la veille. Pour changer la sélection de dates, choisir une nouvelle plage dans le calendrier et cliquer sur "raffraichir les données".
+Par défaut l'application affiche les données de la veille. Pour changer la sélection de dates, choisir une nouvelle plage dans le calendrier et cliquer sur "Appliquer les filtres".
+
+![Rapport de fraudes](data/rapport_fraudes.png)
 
 ### 6. Création et déploiement de l'application streamlit pour visualisation des données (sur Huggigng Face Spaces)
 Le détail de l'installation est documenté dans le [fichier README](API/README.md) du répertoire API.
