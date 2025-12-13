@@ -1,93 +1,226 @@
-# Pipeline CI CD
+# Détection de fraude automatique
+## 📄 Sommaire
+
+- [❓ Contexte](#-contexte)
+- [🎯 Objectifs du projet](#-objectifs-du-projet)
+- [🏗️ Architecture globale](#️-architecture-globale)
+- [📁 Structure du projet](#-structure-du-projet)
+- [🛠️ Technologies](#️-technologies)
+- [💻 Installation](#-installation)
+- [🚀 Utilisation](#-utilisation)
+- [🔄 Data Pipeline](#-data-pipeline)
+
+---
+
+## ❓ Contexte
+
+La fraude représente un problème majeur pour les institutions financières. En 2019, la Banque centrale européenne estimait que les transactions frauduleuses par carte bancaire dans l'UE dépassaient le milliard d'euros ! 😮
+
+L'IA peut contribuer à résoudre ce problème en détectant les paiements frauduleux avec une grande précision. Ce cas d'usage est d'ailleurs devenu l'un des plus populaires auprès des data scientists.
+
+Cependant, malgré la puissance des algorithmes développés, le défi consiste désormais à les déployer en production. Il s'agit de prédire les paiements frauduleux en temps réel et d'y réagir de manière appropriée.
+
+---
+
+## 🎯 Objectifs du projet
+Des clients ont fait appel à votre équipe pour une première version du projet qui a été réalisée. Elle leur permet d'être averti par une notification lorsqu'une fraude est détectée, et tous les matins ils peuvent vérifier les paiements et les fraudes survenus la veille.
+
+Satisfaits de cette première version ils ont demandé d'améliorer les points suivants :
+
+- Proposer un nouveau modèle de détection de fraude, plus performant que celui de la première version
+- Enrichir les rapports de visualisation avec la possibilité de sélectionner des plages de date, et ajouter des diagrammes sur les catégories de transaction concernées par les fraudes
+- intégrer une pipeline CICD afin que les développements réalisés par l'équipe technique n'impacte pas la stabilité de l'application en production.
+- surveiller les performances du modèle et les détecter les éventuels drifts de données
 
 
+---
 
-## Getting started
+## 🏗️ Architecture globale
+![Schéma d'architecture](data/schéma_architecture.png)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+---
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## 📁 Structure du projet
+```
+BLOC4-CICD/
+│
+├── 📁 app/
+│   ├── 🐳 Dockerfile
+│   ├── 🐍 extract.py
+│   ├── 🐍 load_model.py
+│   ├── 🐍 load.py
+│   ├── 📄 requirements.txt
+│   ├── 🐍 run_pipeline.py
+│   ├── 💻 run.sh
+│   ├── 🐍 transform.py
+│   └── 🐍 worker.py
+│
+├── 📁 data/
+│   └── 📊 fraudTest.csv
+│   └── 🏗️ schéma_architecture.png
+│
+├── 📁 mlflow/
+│   ├── 📄 .gitattributes
+│   ├── 🐍 app.py
+│   ├── 🐳 Dockerfile
+│   ├── 📖 README.md
+│   └── 📄 requirements.txt
+│
+├── 📁 model_api/
+│   ├── 🐍 app.py
+│   ├── 🐳 Dockerfile
+│   ├── 📖 README.md
+│   └── 📄 requirements.txt
+│
+├── 📁 streamlit/
+│   ├── 🐳 Dockerfile
+│   └── 📄 requirements.txt
+│
+├── 📁 tests/
+│   ├── 🐳 Dockerfile
+│   ├── ⚙️ pytest.ini
+│   ├── 📄 requirements.txt
+│   ├── 🧪 test_extract.py
+│   ├── 🧪 test_load_model.py
+│   ├── 🧪 test_load.py
+│   └── 🧪 test_transform.py
+│
+├── 📁 train/
+│   └── 🐍 train.py
+│
+├── 🔐 .env
+├── 📄 .gitignore
+├── 📓 dataexplorer.ipynb
+├── 📖 README.md
+└── 📄 requirements.txt
+```
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## 🛠️ Technologies
+
+### Pile de base
+```python
+Python 3.10            # Langage de programmation principal
+SQLAlchemy             # Bibliothèque ORM base de données
+Pandas                 # Bibliothèque pour manipulation Data
+NumPy                  # Bibliothèque pour calcul scientifique
+Requests               # Bibliothèque HTTP for appels API
+Pytest                 # Bibliothèque pour tests automatisés
+Evidently              # Bibliothèque pour surveillance du modèle
+```
+
+### Cloud & Base de données
+- **AWS S3**: Stockage cloud pour données non structurées et fichiers
+- **Neon DB**: Base de données PostgreSQL pour les données structurées
+
+### APIs
+- **Real time fraud API**: Données fictives de transactions bancaires
+- **Fraud Detection**: Modèle de prédiction de fraude
+
+### Development Tools
+- **Jupyter Notebook**: Analyse exploratoire des données
+- **VS Code**: IDE principal
+- **Git**: Contrôle de version
+- **Github**: pipeline CICD via github actions
+- **Hugging Face Spaces** : Déploiement d'applications
+
+---
+
+## 💻 Installation
+
+### Prérequis
+- Python 3.10
+- Compte AWS (pour S3)
+- Compte Neon DB (compte gratuit disponible)
+- Compte Docker Hub (https://hub.docker.com)
+- Compte Hugging Face (https://huggingface.co)
+
+
+### Etapes de configuration
+
+1. **Cloner le dépôt git**
+```bash
+git clone https://github.com/Aurelie-R/bloc4-cicd.git
+cd bloc4-cicd
+```
+
+2. **Créer un environnement virtuel et installer les dépendances**
+```bash
+python -m venv venv
+source venv/bin/activate  # ou venv\Scripts\activate sur Windows
+pip install -r requirements.txt
+```
+
+3. **Configurer les variables d'environnement**
+```bash
+cp config/.env.example .env
+# Edit .env with your API keys and credentials
+```
+
+**Variables d'environnement requises:**
+```env
+# AWS S3
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+S3_BUCKET_NAME=your_bucket_name
+
+# Neon DB
+DATABASE_URL=postgresql://user:password@host/database
+```
+
+---
+
+## 🚀 Utilisation
+### 1. Création et déploiement du serveur mlflow sur Hugging Face Spaces
+Le détail de l'installation est documenté dans le ![fichier README](mlflow/README.md) du répertoire mlflow.
+
+Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugging face space sont les même que celles définies dans votre fichier .venv
+
+Une fois le container déployé, vérifier que l'on accède bien au serveur mlflow sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space 
+
+### 2. Entrainement du modèle de ML
+```bash
+python train/train.py 
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/AurelieRem/bloc3-fraude.git
-git branch -M main
-git push -uf origin main
+Une fois l'entrainement terminé, aller sur la console mlflow (disponible sous votre hugging face space), cliquer sur le menu "Models" du bandeau du haut, puis sur le modèle "fraud_detector_RF" et ajouter l'alias "production" à une des versions du modèle.
+
+### 3. Lancement de la pipeline d'ingestion de données
+```bash
+python app/worker.py 
+
 ```
+### 4. Création et déploiement de l'application streamlit pour visualisation des données (sur Huggigng Face Spaces)
+Le détail de l'installation est documenté dans le ![fichier README](streamlit/README.md) du répertoire streamlit.
 
-## Integrate with your tools
+Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugging face space sont les même que celles définies dans votre fichier .venv
 
-- [ ] [Set up project integrations](https://gitlab.com/AurelieRem/bloc3-fraude/-/settings/integrations)
+Une fois le container déployé, vérifier que l'on accède bien au reporting streamlit sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space 
 
-## Collaborate with your team
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
 
-## Test and Deploy
+### 5. Visualisation des données
+Une fois le container streamlit déployé, l'application de visualisation des données est disponible sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space  défini au point 4.
+Par défaut l'application affiche les données de la veille. Pour changer la sélection de dates, choisir une nouvelle plage dans le calendrier et cliquer sur "raffraichir les données".
 
-Use the built-in continuous integration in GitLab.
+---
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## 🔄 Data Pipeline
 
-***
+### Etape 1: Extract
+- **Real time fraud API Call**: R2cupère une transaction bancaire (fictive)
+- Données brutes stockées dans **AWS S3** (format json)
 
-# Editing this README
+### Etape 2: Transform
+- Transformation des données de l'API pour coller aux attendus du modèle
+- Appel du modèle de détection de fraude
+- Alerting si fraude détectés
+- Stockage des données transformées dans **AWS S3** (format CSV)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Etape 3: Load
+- En utilisant **SQLAlchemy**, enregistrement des données dans Neon DB
 
-## Suggestions for a good README
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
 
-## Name
-Choose a self-explaining name for your project.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

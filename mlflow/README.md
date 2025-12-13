@@ -24,17 +24,17 @@ Ce dépôt permet de lancer un serveur **MLflow** dans un conteneur Docker, avec
 
 1. Connectez-vous à la console AWS.
 2. Allez dans **S3 → Create bucket**.
-3. Choisissez un nom (ex. `mlflow-cicd`) et une région (par ex. `eu-central-1`).
+3. Choisissez un nom (ex. `mlflow-cicd`) et une région (par ex. `eu-central-1`). (utiliser le même pour l'ensemble du projet fraude)
 4. (Optionnel) créez un dossier dans le bucket, par exemple `mlflow-artifacts/`.
 
-**Valeur à utiliser pour MLflow :**
-`s3://mlflow-cicd/mlflow-artifacts/`
+**Valeur à utiliser pour MLflow avec cet exemple :**
+`ARTIFACT_ROOT=s3://mlflow-cicd/mlflow-artifacts/`
 
 ---
 
 ### 1.2. Un utilisateur IAM avec clés d’accès
 
-Nécessaire pour que MLflow puisse écrire dans S3.
+Nécessaire pour que MLflow puisse écrire dans S3. (utiliser le même pour l'ensemble du projet fraude)
 
 1. Allez dans **IAM → Users → Create user**.
 2. Activez **Programmatic access**.
@@ -47,7 +47,7 @@ Nécessaire pour que MLflow puisse écrire dans S3.
 
 ### 1.3. Base de données Neon (BACKEND_STORE_URI)
 
-1. Créez un projet sur : https://neon.tech
+1. Créez un projet sur : https://neon.tech (utiliser le même pour l'ensemble du projet fraude)
 2. Récupérez l’URL PostgreSQL du type : `postgresql://<user>:<password>@<host>/<database>?sslmode=require`
 
 3. Exemple : `postgresql://neondb_owner:MON_MDP@ep-xxxx-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
@@ -72,12 +72,12 @@ Créez un compte sous hugging face : https://huggingface.co/ si vous n'en avez p
   Cliquez sur `Create Space`.
 
 2. Dans l'onglet `Files` de votre space nouvellement créé, importez les fichiers suivants (remplacez si déjà existants) :
-    - Dockerfile
-    - app.py
-    - requirements.txt
+    - mlflow/Dockerfile
+    - mlflow/app.py
+    - mlflow/requirements.txt
 
 ### 2.2. Configuration des variables d'environnement
-Les variables d'environnement suivantes doivent être définies dans les **Repository secrets** du Space :
+Les variables d'environnement suivantes doivent être définies dans les **Repository secrets** du Space (menu `Settings`):
 
 #### 2.2.1. Base de données (obligatoire)
 - `BACKEND_STORE_URI` : URL de connexion PostgreSQL
@@ -101,7 +101,7 @@ Les variables d'environnement suivantes doivent être définies dans les **Repos
 ### 2.3. Construiction de l'application
 Allez sur l'onglet `App` de votre space, il doit se contruire automatiquement.
 Une fois la construction démarrée, vous voyez le serveur mlflow en arrière plan. 
-Fermez la fenêtre des logs, et en haut de l'écran entre le menu "Settings" et l'image de votre user, cliquez sur les trois petits points verticaux, puis sur `Embed this space` pour récupérer la valeur du `src` qui sera à renseigner dans le code python lors du mlflow.set_tracking_uri (cf point 4. ci-dessous)
+Fermez la fenêtre des logs, et en haut de l'écran entre le menu "Settings" et l'image de votre user, cliquez sur les trois petits points verticaux, puis sur `Embed this space` pour récupérer la valeur du `src` qui sera à renseigner dans la variable d'environnement MLFLOW_TRACKING_URI (cf point 4. ci-dessous)
 
 ---
 
@@ -112,24 +112,14 @@ Fermez la fenêtre des logs, et en haut de l'écran entre le menu "Settings" et 
 - **Interface** : MLflow UI accessible via l'URL du Space
 
 ## 4. Utilisation
+Ajouter les variables d'environnement suivantes dans votre .env : 
 
-Depuis votre code Python :
-```python
-import mlflow
+```
+MLFLOW_TRACKING_URI=https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space
 
-# Configurer l'URL de tracking
-mlflow.set_tracking_uri("https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space")
-
-# Si authentification activée
-# import os
-# os.environ["MLFLOW_TRACKING_USERNAME"] = "votre_username"
-# os.environ["MLFLOW_TRACKING_PASSWORD"] = "votre_password"
-
-# Logger vos expériences
-with mlflow.start_run():
-    mlflow.log_param("learning_rate", 0.01)
-    mlflow.log_metric("accuracy", 0.95)
-    mlflow.log_artifact("model.pkl")
+# Si authentification activée :
+# MLFLOW_TRACKING_USERNAME = votre_username
+# MLFLOW_TRACKING_PASSWORD = votre_password
 ```
 
 Vous êtes prêt à lancer vos expériences MLflow 🎉
