@@ -212,6 +212,8 @@ Les valeurs des variables d'envrionnement à renseigner dans les secrets du hugg
 ### 7. Utilisation de l'API
 Une fois le container fastAPI déployé, l'API est disponible sur https://VOTRE_USERNAME-VOTRE_SPACE_NAME.hf.space  défini lors de l'installation du point 6.
 
+![API fraude](data/API_fraude.png)
+
 ---
 
 ## 🔄 Data Pipeline
