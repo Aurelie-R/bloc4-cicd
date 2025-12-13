@@ -9,3 +9,5 @@ openpyxl
 streamlit
 dotenv
 sqlalchemy
+pydeck
+plotly

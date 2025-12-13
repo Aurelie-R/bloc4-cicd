@@ -2,24 +2,27 @@ FROM python:3.10-slim
 
 WORKDIR /home/app
 
+# Installation des dépendances système
 RUN apt-get update \
     && apt-get install -y --no-install-recommends nano unzip curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY . . 
-
-RUN curl -fsSL https://get.deta.dev/cli.sh | sh
-
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-RUN unzip awscliv2.zip
-RUN ./aws/install
-
+# Copie des fichiers de l'application
 COPY requirements.txt /dependencies/requirements.txt
-RUN pip install -r /dependencies/requirements.txt
+RUN pip install --no-cache-dir -r /dependencies/requirements.txt
 
-ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-ENV BACKEND_STORE_URI=$BACKEND_STORE_URI
-ENV ARTIFACT_ROOT=$ARTIFACT_ROOT
+# Copie du reste des fichiers
+COPY . .
 
-CMD streamlit run app.py
+# Configuration de Streamlit pour Hugging Face Spaces
+RUN mkdir -p ~/.streamlit \
+    && echo "[server]\nheadless = true\nport = 7860\nenableCORS = false\nenableXsrfProtection = false\n" > ~/.streamlit/config.toml
+
+# Exposition du port
+EXPOSE 7860
+
+# Variables d'environnement
+ENV BACKEND_STORE_URI=${BACKEND_STORE_URI}
+
+# Commande de démarrage
+CMD streamlit run app.py --server.port=7860 --server.address=0.0.0.0
