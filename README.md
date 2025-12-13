@@ -9,6 +9,7 @@
 - [💻 Installation](#-installation)
 - [🚀 Utilisation](#-utilisation)
 - [🔄 Data Pipeline](#-data-pipeline)
+- [🔄 CI / CD](#-ci--cd)
 
 ---
 
