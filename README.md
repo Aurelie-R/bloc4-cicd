@@ -233,7 +233,7 @@ Une fois le container fastAPI déployé, l'API est disponible sur https://VOTRE_
 
 ---
 
-## 🔄 CI / CD
+## 🔄 CI / CD 
 
 ### Etape 1: Mise à jour du code
 A chaque mise à jour du code sur github, une action de vérification est lancée.
