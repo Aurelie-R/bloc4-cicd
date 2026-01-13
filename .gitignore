@@ -2,3 +2,7 @@
 secret.sh
 .env
 *.pyc
+*.log
+*.html
+*.jsonl
+*.parquet

@@ -1,0 +1,59 @@
+# monitoring/.dockerignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reports générés (ne pas les inclure dans l'image)
+reports/*.html
+reports/*.json
+reports/*.log
+
+# Données (seront montées via volumes)
+reference_data/*.parquet
+reference_data/*.csv
+
+# Logs
+logs/*.log
+*.log
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Tests
+tests/
+pytest.ini
+.pytest_cache/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

@@ -24,6 +24,13 @@ load_dotenv(env_path, override=True)
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://0.0.0.0:4000")
 EXPERIMENT_NAME="fraud_detector"
 
+# function for saving data reference for Evidently
+def save_reference_data(X_test, y_test, predictions):
+    reference = X_test.copy()
+    reference["target"] = y_test
+    reference["prediction"] = predictions
+    reference.to_parquet("monitoring/reference_data/baseline.parquet")
+
 if __name__ == "__main__":
 
     # Set tracking URI for MLFlow
@@ -144,6 +151,9 @@ if __name__ == "__main__":
         print(f"Recall Score: {result.metrics['recall_score']:.3f}")
         print(f"F1 Score: {result.metrics['f1_score']:.3f}")
         print(f"ROC AUC: {result.metrics['roc_auc']:.3f}")
+
+        # Save reference data for Evidently
+        save_reference_data(X_test, y_test, model.predict(X_test))
 
         # Récupérer la dernière version du modèle
         client = MlflowClient()

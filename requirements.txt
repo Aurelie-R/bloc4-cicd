@@ -9,3 +9,6 @@ ipykernel
 seaborn
 xgboost
 uvicorn[standard]
+evidently
+tracely
+schedule

@@ -1,10 +1,16 @@
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import boto3
 from dotenv import find_dotenv, load_dotenv
 import logging
+# Ajouter le répertoire racine du projet au PYTHONPATH
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+from monitoring.evidently_monitor import log_prediction
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -46,7 +52,11 @@ def build_features_from_transaction(transaction_json: dict) -> pd.DataFrame:
 
     features = pd.DataFrame(transaction_data, columns=columns)
     features['unix_time'] = features['current_time']/1000
-    features['trans_date_trans_time'] = pd.to_datetime(features['current_time'], unit='ms').dt.strftime('%Y-%m-%d %H:%M:%S')
+    # features['trans_date_trans_time'] = pd.to_datetime(features['current_time'], unit='ms').dt.strftime('%Y-%m-%d %H:%M:%S')
+    # Convertir en datetime puis soustraire un mois
+    features['trans_date_trans_time'] = (
+        pd.to_datetime(features['current_time'], unit='ms') - pd.DateOffset(months=1)
+    ).dt.strftime('%Y-%m-%d %H:%M:%S')
     features.drop(columns=['current_time'], inplace=True)
     features = features.astype({col: "float64" for col in features.select_dtypes(include=["int"]).columns})
     features = features.drop(columns=['is_fraud'])
@@ -86,6 +96,14 @@ def predict_fraud(model, features: pd.DataFrame) -> pd.DataFrame:
     """
     preds = model.predict(features)
     proba = model.predict_proba(features)
+
+    # log for evidently monitoring
+    logging.info("Appel pour logging")
+    log_prediction(
+        features=features,
+        prediction=preds,
+        timestamp=datetime.now()
+    )
 
     result = features.copy()
     result["fraud_pred"] = preds

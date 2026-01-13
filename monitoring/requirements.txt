@@ -1,0 +1,33 @@
+# monitoring/requirements.txt
+
+# Evidently - Monitoring ML
+evidently
+tracely
+
+# Data processing
+pandas==2.1.4
+numpy==1.26.2
+pyarrow==14.0.1  # Pour lire/écrire des parquets
+
+# Machine Learning
+scikit-learn==1.3.2
+
+# Scheduling
+schedule==1.2.0
+
+# HTTP requests (pour webhooks, Slack, etc.)
+requests==2.32.0
+
+# Logging amélioré (optionnel mais recommandé)
+python-json-logger==2.0.7
+
+# Variables d'environnement (optionnel)
+python-dotenv==1.0.0
+
+# Pour les rapports plus avancés (optionnel)
+plotly==5.18.0
+kaleido==0.2.1  # Pour exporter des graphiques statiques
+
+# Pour servir les rapports via HTTP (optionnel)
+# flask==3.0.0
+# waitress==2.1.2
