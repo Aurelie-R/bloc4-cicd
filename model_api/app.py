@@ -6,6 +6,8 @@ from fastapi import FastAPI, File
 from fastapi.responses import HTMLResponse
 import requests
 import json
+from datetime import datetime
+from monitoring.evidently_monitor import log_prediction
 
 API_URL = "https://aremusan-real-time-fraud-detection.hf.space/current-transactions" # URL personnelle
 mlflow.set_tracking_uri('https://aremusan-mlflow.hf.space')
@@ -196,6 +198,13 @@ async def predict(predictionFeatures: PredictionFeatures):
     #loaded_model = joblib.load('salary_predictor/model.joblib')
 
     prediction = loaded_model.predict(transaction_to_test)
+    
+    # # Log for evidently monitoring
+    # log_prediction(
+    #     features=transaction_to_test,
+    #     prediction=prediction,
+    #     timestamp=datetime.now()
+    # )
 
     # Format response
     response = {"prediction": prediction.tolist()[0]}
